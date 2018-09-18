@@ -7,6 +7,8 @@ basePath: /api/v1
 tags:
   - name: Examples
     description: Simple example endpoints
+  - name: Questions
+    description: Questions endpoints
   - name: Specification
     description: The swagger API specification
 
@@ -74,3 +76,12 @@ paths:
       responses:
         200:
           description: Return the API specification
+
+  /questions:
+    get:
+      tags:
+        - Questions
+      description: Fetch all questions
+      responses:
+        200:
+          description: Returns all questions
