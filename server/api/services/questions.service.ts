@@ -4,46 +4,47 @@ import L from '../../common/logger'
 
 const client = new Client(`${process.env.DATABASE_URL}?ssl=true`);
 client.connect();
-client.query('CREATE TABLE questions(id SERIAL PRIMARY KEY, name VARCHAR(40) not null, text VARCHAR(300) not null, difficulty INT, answer VARCHAR(200) not null)', (err, res) => {
-  console.log(err && err.message, res);
-});
+client.query('CREATE TABLE categories(' +
+  'id SERIAL PRIMARY KEY, ' +
+  'name VARCHAR(40) not null, ' +
+  'parent INT, ' +
+  'FOREIGN KEY (parent) REFERENCES categories(id))', (err, res) => {
+    console.log(err && err.message, res);
+    client.query('CREATE TABLE questions(' +
+      'id SERIAL PRIMARY KEY, ' +
+      'name VARCHAR(40) not null, ' +
+      'text VARCHAR(300) not null, ' +
+      'difficulty INT, ' +
+      'answer VARCHAR(200) not null, ' +
+      'category INT, ' +
+      'FOREIGN KEY (category) REFERENCES categories(id))', (err, res) => {
+        console.log(err && err.message, res);
+      });
+  });
 
 let id = 0;
-interface Example {
+interface Question {
   id: number,
-  name: string
+  name: string,
+  text: string,
+  difficulty: number,
+  answer: string,
 };
 
-const examples: Example[] = [
-    { id: id++, name: 'example 0' }, 
-    { id: id++, name: 'example 1' }
-];
-
 export class QuestionsService {
-  all(): Promise<Example[]> {
-    L.info(examples, 'fetch all examples');
-
+  all(): Promise<Question[]> {
     return new Promise((resolve, reject) => {
       client.query('SELECT * FROM questions ORDER BY id ASC;', (err, res) => {
+        L.info(res.rows, 'fetch all questions');
         console.log(err && err.message, res && res.rows);
         return resolve(res.rows);
       });
     });
   }
 
-  byId(id: number): Promise<Example> {
-    L.info(`fetch example with id ${id}`);
-    return this.all().then(r => r[id])
-  }
-
-  create(name: string): Promise<Example> {
-    L.info(`create example with name ${name}`);
-    const example: Example = {
-      id: id++,
-      name
-    };
-    examples.push(example)
-    return Promise.resolve(example);
+  create(question: Question): Promise<Question> {
+    L.info(`create question ${question}`);
+    return Promise.resolve(<Question>{ id: 12 });
   }
 }
 

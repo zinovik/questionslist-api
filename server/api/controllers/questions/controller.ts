@@ -6,15 +6,8 @@ export class Controller {
     QuestionsService.all().then(r => res.json(r));
   }
 
-  byId(req: Request, res: Response): void {
-    QuestionsService.byId(req.params.id).then(r => {
-      if (r) res.json(r);
-      else res.status(404).end();
-    });
-  }
-
   create(req: Request, res: Response): void {
-    QuestionsService.create(req.body.name).then(r =>
+    QuestionsService.create(req.body).then(r =>
       res
         .status(201)
         .location(`/api/v1/examples/${r.id}`)
