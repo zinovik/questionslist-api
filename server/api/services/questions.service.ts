@@ -9,7 +9,7 @@ client.query('CREATE TABLE categories(' +
   'name VARCHAR(40) not null, ' +
   'parent INT, ' +
   'FOREIGN KEY (parent) REFERENCES categories(id))', (err, res) => {
-    console.log(err && err.message, res);
+    console.log(err && err.message || res);
     client.query('CREATE TABLE questions(' +
       'id SERIAL PRIMARY KEY, ' +
       'name VARCHAR(40) not null, ' +
@@ -18,7 +18,7 @@ client.query('CREATE TABLE categories(' +
       'answer VARCHAR(200) not null, ' +
       'category INT, ' +
       'FOREIGN KEY (category) REFERENCES categories(id))', (err, res) => {
-        console.log(err && err.message, res);
+        console.log(err && err.message || res);
       });
   });
 
@@ -29,6 +29,7 @@ interface Question {
   text: string,
   difficulty: number,
   answer: string,
+  category: number,
 };
 
 export class QuestionsService {
@@ -36,15 +37,24 @@ export class QuestionsService {
     return new Promise((resolve, reject) => {
       client.query('SELECT * FROM questions ORDER BY id ASC;', (err, res) => {
         L.info(res.rows, 'fetch all questions');
-        console.log(err && err.message, res && res.rows);
+        console.log(err && err.message || (res && res.rows));
         return resolve(res.rows);
       });
     });
   }
 
-  create(question: Question): Promise<Question> {
-    L.info(`create question ${question}`);
-    return Promise.resolve(<Question>{ id: 12 });
+  create(question: Question): Promise<Question[]> {
+    return new Promise((resolve, reject) => {
+      L.info(`create question ${question}`);
+      client.query(`INSERT INTO questions(name, text, difficulty, answer, category) ` +
+        `values('${question.name}', '${question.text}', '${question.difficulty}', '${question.answer}', '${question.category}')`, (err, res) => {
+          console.log(err && err.message || (res && res.rows));
+          return this.all()
+            .then((rows: Question[]) => {
+              resolve(rows);
+            });
+        });
+    });
   }
 }
 

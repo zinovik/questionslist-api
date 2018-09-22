@@ -10,7 +10,7 @@ export class Controller {
     QuestionsService.create(req.body).then(r =>
       res
         .status(201)
-        .location(`/api/v1/examples/${r.id}`)
+        .location(`/api/v1/questions/${r}`)
         .json(r),
     );
   }
