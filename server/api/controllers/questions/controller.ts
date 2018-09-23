@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 export class Controller {
   all(req: Request, res: Response): void {
     DbService.getAllQuestions().then(r => {
-      r['email'] = req['session'].email;
+      r['email'] = req['session'] && req['session'].email;
       return res.json(r);
     });
   }

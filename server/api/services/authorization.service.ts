@@ -18,7 +18,7 @@ export class AuthorizationService {
       })
       .catch((error) => {
         L.info('login with token error');
-        return Promise.resolve();
+        return Promise.resolve({});
       });
   }
 }

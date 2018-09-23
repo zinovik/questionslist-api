@@ -143,8 +143,9 @@ export class DbService {
   createCategory(category: Category): Promise<{ error: string, data: Category[] }> {
     return new Promise((resolve, reject) => {
       L.info(`create category`, category);
-      client.query(`INSERT INTO categories(name, parent, created, modified) ` +
-        `values('${category.name}', '${category.parent}', 'anonymous', 'anonymous')`, (err, res) => {
+      const isEmptyParent = (category.parent === null || category.parent === "null");
+      client.query(`INSERT INTO categories(name, ${isEmptyParent ? '' : 'parent, '}created, modified) ` +
+        `values('${category.name}', ${isEmptyParent ? '' : `'${category.parent}', `}'anonymous', 'anonymous')`, (err, res) => {
           if (err) {
             L.error(err.message);
           }
@@ -159,9 +160,11 @@ export class DbService {
   updateCategory(category: Category): Promise<{ error: string, data: Category[] }> {
     return new Promise((resolve, reject) => {
       L.info(`update category`, category);
+      const isEmptyParent = (category.parent === null || category.parent === "null");
+      console.log(isEmptyParent);
       client.query(`UPDATE categories ` +
-        `SET name = '${category.name}', ` +
-        `parent = '${category.parent}' ` +
+        `SET name = '${category.name}'` +
+        (isEmptyParent ? `, parent = NULL ` : `, parent = '${category.parent}' `) +
         `WHERE id = '${category.id}'`, (err, res) => {
           if (err) {
             L.error(err.message);
