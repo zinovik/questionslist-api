@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import { Client } from 'pg';
-import L from '../../common/logger'
+import L from '../../common/logger';
 
 const client = new Client(`${process.env.DATABASE_URL}?ssl=true`);
 client.connect();

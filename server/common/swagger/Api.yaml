@@ -42,6 +42,15 @@ definitions:
       name:
         type: string
         example: no_stress
+  LoginBody:
+    type: object
+    title: example
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        example: no_stress
 
 paths:
   /examples:
@@ -192,3 +201,19 @@ paths:
       responses:
         200:
           description: Returns all categories
+
+  /authorization/login:
+    post:
+      tags:
+        - Authorization
+      description: Login with google token
+      parameters:
+        - token: example
+          in: body
+          description: a token
+          required: true
+          schema: 
+            $ref: "#/definitions/LoginBody"
+      responses:
+        200:
+          description: User name
