@@ -31,8 +31,13 @@ definitions:
   QuestionBody:
     type: object
     title: question
-    required:
-      - name
+    properties:
+      name:
+        type: string
+        example: no_stress
+  CategoryBody:
+    type: object
+    title: category
     properties:
       name:
         type: string
@@ -108,3 +113,82 @@ paths:
       responses:
         200:
           description: Returns all questions
+    put:
+      tags:
+        - Questions
+      description: Update a question
+      parameters:
+        - name: name
+          in: body
+          description: a question
+          required: true
+          schema: 
+            $ref: "#/definitions/QuestionBody"
+      responses:
+        200:
+          description: Returns all questions
+    delete:
+      tags:
+        - Questions
+      description: Delete a question
+      parameters:
+        - id: id
+          in: body
+          description: a question
+          required: true
+          schema: 
+            $ref: "#/definitions/QuestionBody"
+      responses:
+        200:
+          description: Returns all questions
+
+  /categories:
+    get:
+      tags:
+        - Categories
+      description: Fetch all categories
+      responses:
+        200:
+          description: Returns all categories
+    post:
+      tags:
+        - Categories
+      description: Create a new category
+      parameters:
+        - name: name
+          in: body
+          description: a category
+          required: true
+          schema: 
+            $ref: "#/definitions/CategoryBody"
+      responses:
+        200:
+          description: Returns all categories
+    put:
+      tags:
+        - Categories
+      description: Update a category
+      parameters:
+        - name: name
+          in: body
+          description: a category
+          required: true
+          schema: 
+            $ref: "#/definitions/CategoryBody"
+      responses:
+        200:
+          description: Returns all categories
+    delete:
+      tags:
+        - Categories
+      description: Delete a category
+      parameters:
+        - id: id
+          in: body
+          description: a category
+          required: true
+          schema: 
+            $ref: "#/definitions/CategoryBody"
+      responses:
+        200:
+          description: Returns all categories
