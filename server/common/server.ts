@@ -7,6 +7,7 @@ import os from 'os';
 import cookieParser from 'cookie-parser';
 import swaggerify from './swagger';
 import l from './logger';
+import session from 'express-session';
 
 const app = express();
 
@@ -17,6 +18,15 @@ export default class ExpressServer {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.SESSION_SECRET));
+    app.use(session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/',
+      }
+    }));
     app.use(express.static(`${root}/public`));
   }
 
@@ -26,7 +36,7 @@ export default class ExpressServer {
   }
 
   listen(port: number = parseInt(process.env.PORT)): Application {
-    const welcome = port => () => l.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname() } on port: ${port}}`);
+    const welcome = port => () => l.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname()} on port: ${port}}`);
     http.createServer(app).listen(port, welcome(port));
     return app;
   }

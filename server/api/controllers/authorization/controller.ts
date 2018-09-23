@@ -6,8 +6,7 @@ export class Controller {
     AuthorizationService.getUserInfo(req.body.token)
       .then(r => {
         if (r) {
-          console.log(r.email);
-          // console.log(req.session);
+          req['session'].given_name = r.given_name;
         }
         return res.json(r)
       });
