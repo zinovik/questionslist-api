@@ -9,7 +9,7 @@ export class Controller {
           req['session'].given_name = r.given_name;
           req['session'].email = r.email;
         }
-        return res.json(r)
+        return res.json(r);
       });
   }
 }

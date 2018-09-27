@@ -70,12 +70,12 @@ export class DbService {
     });
   }
 
-  createQuestion(question: Question): Promise<{ error: string, data: Question[] }> {
+  createQuestion(question: Question, session): Promise<{ error: string, data: Question[] }> {
     return new Promise((resolve, reject) => {
       L.info(`create question`, question);
       client.query(`INSERT INTO questions(name, text, difficulty, answer, category, tags, created, modified) ` +
         `values('${question.name}', '${question.text}', '${question.difficulty}', '${question.answer}', ` +
-        `'${question.category}', '${question.tags}', 'anonymous', 'anonymous')`, (err, res) => {
+        `'${question.category}', '${question.tags}', '${session && session.email}', '${session && session.email}')`, (err, res) => {
           if (err) {
             L.error(err.message);
           }
@@ -87,7 +87,7 @@ export class DbService {
     });
   }
 
-  updateQuestion(question: Question): Promise<{ error: string, data: Question[] }> {
+  updateQuestion(question: Question, session): Promise<{ error: string, data: Question[] }> {
     return new Promise((resolve, reject) => {
       L.info(`update question`, question);
       client.query(`UPDATE questions ` +
@@ -97,6 +97,7 @@ export class DbService {
         `answer = '${question.answer}', ` +
         `tags = '${question.tags}', ` +
         `category = '${question.category}' ` +
+        `modified = '${session && session.email}' ` +
         `WHERE id = '${question.id}'`, (err, res) => {
           if (err) {
             L.error(err.message);
@@ -140,12 +141,12 @@ export class DbService {
     });
   }
 
-  createCategory(category: Category): Promise<{ error: string, data: Category[] }> {
+  createCategory(category: Category, session): Promise<{ error: string, data: Category[] }> {
     return new Promise((resolve, reject) => {
       L.info(`create category`, category);
       const isEmptyParent = (category.parent === null || category.parent === "null");
       client.query(`INSERT INTO categories(name, ${isEmptyParent ? '' : 'parent, '}created, modified) ` +
-        `values('${category.name}', ${isEmptyParent ? '' : `'${category.parent}', `}'anonymous', 'anonymous')`, (err, res) => {
+        `values('${category.name}', ${isEmptyParent ? '' : `'${category.parent}', `}'${session && session.email}', '${session && session.email}')`, (err, res) => {
           if (err) {
             L.error(err.message);
           }
@@ -157,7 +158,7 @@ export class DbService {
     });
   }
 
-  updateCategory(category: Category): Promise<{ error: string, data: Category[] }> {
+  updateCategory(category: Category, session): Promise<{ error: string, data: Category[] }> {
     return new Promise((resolve, reject) => {
       L.info(`update category`, category);
       const isEmptyParent = (category.parent === null || category.parent === "null");
@@ -165,6 +166,7 @@ export class DbService {
       client.query(`UPDATE categories ` +
         `SET name = '${category.name}'` +
         (isEmptyParent ? `, parent = NULL ` : `, parent = '${category.parent}' `) +
+        `modified = '${session && session.email}' ` +
         `WHERE id = '${category.id}'`, (err, res) => {
           if (err) {
             L.error(err.message);
