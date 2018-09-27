@@ -96,7 +96,7 @@ export class DbService {
         `difficulty = '${question.difficulty}', ` +
         `answer = '${question.answer}', ` +
         `tags = '${question.tags}', ` +
-        `category = '${question.category}' ` +
+        `category = '${question.category}', ` +
         `modified = '${session && session.email}' ` +
         `WHERE id = '${question.id}'`, (err, res) => {
           if (err) {
@@ -165,7 +165,7 @@ export class DbService {
       console.log(isEmptyParent);
       client.query(`UPDATE categories ` +
         `SET name = '${category.name}'` +
-        (isEmptyParent ? `, parent = NULL ` : `, parent = '${category.parent}' `) +
+        (isEmptyParent ? `, parent = NULL ` : `, parent = '${category.parent}', `) +
         `modified = '${session && session.email}' ` +
         `WHERE id = '${category.id}'`, (err, res) => {
           if (err) {
