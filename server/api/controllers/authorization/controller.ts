@@ -7,6 +7,7 @@ export class Controller {
       .then(r => {
         if (r && req['session']) {
           req['session'].given_name = r.given_name;
+          req['session'].email = r.email;
         }
         return res.json(r)
       });
